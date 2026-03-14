@@ -2,35 +2,41 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Discipline Streak</title>
+<title>Execution Streak</title>
 
 <style>
+
 body{
-    font-family: Arial, sans-serif;
-    background:#0f1117;
-    color:white;
+    font-family: Arial;
+    background:#0b0f19;
     display:flex;
     justify-content:center;
     align-items:center;
     height:100vh;
+    color:white;
 }
 
 .card{
-    background:#1a1d26;
+    background:#151b2e;
     padding:40px;
     border-radius:20px;
     text-align:center;
-    width:250px;
-    box-shadow:0 10px 30px rgba(0,0,0,0.5);
+    width:260px;
+    box-shadow:0 15px 40px rgba(0,0,0,0.6);
+}
+
+.title{
+    font-size:22px;
+    margin-bottom:10px;
 }
 
 .streak{
-    font-size:60px;
+    font-size:70px;
     font-weight:bold;
 }
 
 .label{
-    color:#aaa;
+    color:#9aa3b2;
     margin-bottom:20px;
 }
 
@@ -39,19 +45,29 @@ button{
     padding:10px 18px;
     margin:5px;
     border-radius:10px;
-    font-size:16px;
+    font-size:15px;
     cursor:pointer;
 }
 
 .add{
     background:#2ecc71;
-    color:white;
 }
 
 .reset{
     background:#e74c3c;
-    color:white;
 }
+
+button:disabled{
+    opacity:0.4;
+    cursor:not-allowed;
+}
+
+.message{
+    margin-top:10px;
+    font-size:13px;
+    color:#f39c12;
+}
+
 </style>
 </head>
 
@@ -59,32 +75,62 @@ button{
 
 <div class="card">
 
-<div style="font-size:22px;">🔥 Discipline Streak</div>
+<div class="title">🔥 Execution Streak</div>
 
 <div class="streak" id="counter">0</div>
 <div class="label">days</div>
 
-<button class="add" onclick="add()">+1</button>
+<button id="addBtn" class="add" onclick="add()">+1</button>
 <button class="reset" onclick="reset()">Reset</button>
+
+<div class="message" id="message"></div>
 
 </div>
 
 <script>
 
 let streak = localStorage.getItem("streak") || 0;
+let lastDate = localStorage.getItem("lastDate");
+
+let today = new Date().toDateString();
 
 document.getElementById("counter").innerText = streak;
 
+if(lastDate === today){
+    document.getElementById("addBtn").disabled = true;
+    document.getElementById("message").innerText = "✅ Déjà validé aujourd'hui. Reviens demain.";
+}
+
 function add(){
+
+    if(lastDate === today){
+        return;
+    }
+
     streak++;
+
     localStorage.setItem("streak", streak);
+    localStorage.setItem("lastDate", today);
+
     document.getElementById("counter").innerText = streak;
+
+    document.getElementById("addBtn").disabled = true;
+
+    document.getElementById("message").innerText = "🔥 Journée validée !";
 }
 
 function reset(){
+
     streak = 0;
+
     localStorage.setItem("streak", streak);
+    localStorage.removeItem("lastDate");
+
     document.getElementById("counter").innerText = streak;
+    document.getElementById("addBtn").disabled = false;
+
+    document.getElementById("message").innerText = "";
+
 }
 
 </script>
